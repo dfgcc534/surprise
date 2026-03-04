@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>letter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+KR:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/nes.css@latest/css/nes.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="game">
+
+    <!-- Step 1: 인트로 선택 화면 -->
+    <div id="step-1" class="screen active">
+      <div class="stage">
+        <div class="cat-wrap">
+          <img id="cat-img" src="assets/me/Untitled (2).png" alt="고양이" />
+        </div>
+      </div>
+      <div class="dialog-box">
+        <p id="step1-text" class="dialog-text"></p>
+        <div class="btn-row">
+          <button id="btn-yes" class="nes-btn is-primary">[ Y ]</button>
+          <button id="btn-no" class="nes-btn is-error">[ N ]</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // utils.js
+    const state = { currentStep: 1 };
+    function goToStep(n) {
+      const current = document.querySelector('.screen.active');
+      if (current) current.classList.remove('active');
+      const next = document.getElementById('step-' + n);
+      if (next) next.classList.add('active');
+      state.currentStep = n;
+    }
+
+    // steps/step1.js
+    function typeText(el, text, speed) {
+      speed = speed || 80;
+      el.textContent = '';
+      var i = 0;
+      var timer = setInterval(function() {
+        el.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(timer);
+      }, speed);
+    }
+
+    function initStep1() {
+      var textEl = document.getElementById('step1-text');
+      var btnYes = document.getElementById('btn-yes');
+      var btnNo  = document.getElementById('btn-no');
+      typeText(textEl, '편지를 받으시겠습니까?', 128);
+      btnYes.addEventListener('click', function() { goToStep(2); });
+      btnNo.addEventListener('click', function() { typeText(textEl, '...눌러줘', 183); });
+    }
+
+    // main.js
+    initStep1();
+  </script>
+</body>
+</html>

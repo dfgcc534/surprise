@@ -27,5 +27,33 @@
 - 캐릭터 제외 모든 component/object는 NES.css 고정 사용
 - object 구현 전에 NES.css에 비슷한 거 있는지 찾아보고사용
 
-##진행 과정
-- 각 step 별로 
+## 파일 구조 (확정 — 변경 금지)
+```
+/
+├── index.html          # 전체 div 구조, NES.css CDN, main.js 로드
+├── style.css           # 공통 스타일, CSS 변수, 화면 전환
+├── main.js             # 진입점 — 각 step init 함수 호출만
+├── utils.js            # goToStep(), state — 모든 step이 여기서 import
+├── steps/
+│   ├── step1.js ~ step9.js
+└── assets/
+    ├── me/             # 고양이 캐릭터 이미지
+    └── letter.txt
+
+- receipt/stepN.md      # 완성된 step 명세 보관 (참고용)
+- stepN.md              # 작업 중인 step 명세 (구현 전 작성, 완성 후 receipt/로 이동)
+```
+
+
+## JS 모듈 컨벤션
+- 순환 import 금지: goToStep/state는 반드시 utils.js에서 import
+- 각 step 파일은 initStepN() 함수를 export, main.js에서 호출
+- NES.css 클래스를 dialog/container에 직접 쓰면 color 충돌 발생 → 커스텀 클래스만 사용
+
+## CSS 컨벤션
+- NES.css 컴포넌트에 color 덮어쓰기 필요 시 커스텀 클래스로 래핑, nes-* 클래스 직접 수정 금지
+- 버튼(nes-btn)은 NES.css 그대로 사용 가능
+- 배경색: #000, 텍스트: #fff
+
+## 진행 과정
+- 각 step 구현 전 stepN.md 명세 작성 → 구현 → 완성 시 receipt/stepN.md로 이동

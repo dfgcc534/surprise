@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+  --bg: #000;
+  --text: #fff;
+  --accent: #e76f51;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Press Start 2P', 'Noto Sans KR', monospace;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#game {
+  width: 100%;
+  max-width: 640px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* 화면 전환 */
+.screen {
+  display: none;
+  flex-direction: column;
+}
+.screen.active {
+  display: flex;
+  animation: fadeIn 0.86s ease forwards;
+}
+
+
+/* 캐릭터 무대 영역 */
+.stage {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 16px;
+}
+
+/* 고양이 이미지 */
+.cat-wrap img {
+  width: 200px;
+}
+
+/* Undertale 스타일 대화창 */
+.dialog-box {
+  background: #000;
+  color: #fff !important;
+  border: 4px solid #fff;
+  padding: 24px;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.dialog-box p,
+.dialog-box span,
+.dialog-box * {
+  color: #fff !important;
+}
+
+.dialog-text {
+  font-size: 20px;
+  line-height: 1.8;
+  min-height: 52px;
+  margin: 0 0 20px 0;
+  color: #fff !important;
+  font-family: 'Noto Sans KR', 'Press Start 2P', monospace;
+  font-weight: 700;
+}
+
+/* 버튼 행 */
+.btn-row {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
