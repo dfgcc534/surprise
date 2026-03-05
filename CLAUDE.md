@@ -4,6 +4,7 @@
 - 여자친구 생일 선물용 정적 사이트 게임/애니메이션
 - 빌드 도구 없이 index.html 단일 파일 또는 step별 파일로 구성
 - 외부 라이브러리: NES.css
+- 언더테일 디자인
 
 ## 게임 흐름 (9 Steps)
 - Step 1: 인트로 Y/N 선택 + 내 캐릭터 등장
@@ -49,6 +50,8 @@
 - 순환 import 금지: goToStep/state는 반드시 utils.js에서 import
 - 각 step 파일은 initStepN() 함수를 export, main.js에서 호출
 - NES.css 클래스를 dialog/container에 직접 쓰면 color 충돌 발생 → 커스텀 클래스만 사용
+- 각 initStepN()은 반드시 `stepInits[N] = initStepN` 으로 등록 — URL 해시(`index.html#stepN`)로 해당 step 직접 진입 가능
+- 공용 유틸: `showGameOver(lines, onDone)` — 게임오버 화면 표시, 어느 step에서든 호출 가능
 
 ## CSS 컨벤션
 - NES.css 컴포넌트에 color 덮어쓰기 필요 시 커스텀 클래스로 래핑, nes-* 클래스 직접 수정 금지

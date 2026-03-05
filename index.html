@@ -12,18 +12,40 @@
   <div id="game">
 
     <!-- Step 1: 인트로 선택 화면 -->
-    <div id="step-1" class="screen active">
+    <div id="step-1" class="screen">
       <div class="stage">
         <div class="cat-wrap">
-          <img id="cat-img" src="assets/me/Untitled (2).png" alt="고양이" />
+          <img id="cat-img" src="assets/me/stand_cat.png" alt="고양이" />
         </div>
       </div>
       <div class="dialog-box">
-        <p id="step1-text" class="dialog-text"></p>
+        <p id="step1-text" class="dialog-text" style="color:#fff;"></p>
         <div class="btn-row">
           <button id="btn-yes" class="nes-btn is-primary">[ Y ]</button>
           <button id="btn-no" class="nes-btn is-error">[ N ]</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Step 2: 본인 확인 경고 화면 -->
+    <div id="step-2" class="screen">
+      <div id="step2-normal">
+        <div class="stage">
+          <div class="cat-wrap">
+            <img src="assets/me/stop_cat.png" alt="고양이" />
+          </div>
+        </div>
+        <div class="dialog-box">
+          <p id="step2-text" class="dialog-text" style="color:#fff;"></p>
+          <div id="step2-btns" class="btn-row" style="display:none;">
+            <button id="btn-quiz" class="nes-btn is-primary">[ 퀴즈를 푼다 ]</button>
+            <button id="btn-refuse" class="nes-btn is-error">[ 거절한다 ]</button>
+          </div>
+        </div>
+      </div>
+      <div id="step2-gameover" class="gameover-wrap" style="display:none;">
+        <p id="step2-go-text" style="color:#fff; font-size:40px; text-align:center; line-height:2; margin:0 0 40px 0; max-width:90vw; font-family:'Noto Sans KR',sans-serif; word-break:keep-all;"></p>
+        <p id="step2-go-title" style="color:#e74c3c; font-size:96px; text-align:center; margin:0 0 15vh 0; display:none;" class="blink">GAME OVER</p>
       </div>
     </div>
 
@@ -32,12 +54,65 @@
   <script>
     // utils.js
     const state = { currentStep: 1 };
+    var stepInits = {};
+
     function goToStep(n) {
-      const current = document.querySelector('.screen.active');
+      var current = document.querySelector('.screen.active');
       if (current) current.classList.remove('active');
-      const next = document.getElementById('step-' + n);
+      var next = document.getElementById('step-' + n);
       if (next) next.classList.add('active');
       state.currentStep = n;
+      if (stepInits[n]) stepInits[n]();
+    }
+
+    // utils — showGameOver(lines, onDone)
+    // lines: 순차 타이핑할 문자열 배열 (\n 으로 줄바꿈 가능)
+    // onDone: GAME OVER 표시 후 3초 뒤 호출되는 콜백
+    function showGameOver(lines, onDone) {
+      var goText  = document.getElementById('step2-go-text');
+      var goTitle = document.getElementById('step2-go-title');
+      var goWrap  = document.getElementById('step2-gameover');
+      goWrap.style.display = 'flex';
+      goText.innerHTML = '';
+      goTitle.style.display = 'none';
+      var gi = 0;
+
+      function typeGoLine(text, cb) {
+        goText.innerHTML = '';
+        var idx = 0;
+        var t = setInterval(function() {
+          if (text[idx] === '\n') {
+            goText.appendChild(document.createElement('br'));
+          } else {
+            var last = goText.lastChild;
+            if (last && last.nodeType === 3) {
+              last.textContent += text[idx];
+            } else {
+              goText.appendChild(document.createTextNode(text[idx]));
+            }
+          }
+          idx++;
+          if (idx >= text.length) { clearInterval(t); if (cb) cb(); }
+        }, 60);
+      }
+
+      function next() {
+        if (gi >= lines.length) {
+          setTimeout(function() {
+            goText.innerHTML = '';
+            goTitle.style.display = 'block';
+            setTimeout(function() {
+              goTitle.style.display = 'none';
+              goWrap.style.display = 'none';
+              if (onDone) onDone();
+            }, 3000);
+          }, 1500);
+          return;
+        }
+        typeGoLine(lines[gi], function() { gi++; setTimeout(next, 1000); });
+      }
+
+      next();
     }
 
     // steps/step1.js
@@ -58,11 +133,84 @@
       var btnNo  = document.getElementById('btn-no');
       typeText(textEl, '편지를 받으시겠습니까?', 128);
       btnYes.addEventListener('click', function() { goToStep(2); });
-      btnNo.addEventListener('click', function() { typeText(textEl, '...눌러줘', 183); });
+      btnNo.addEventListener('click', function() { typeText(textEl, '...눌러줘', 137); });
+    }
+
+    // steps/step2.js
+    function initStep2() {
+      var textEl = document.getElementById('step2-text');
+      var btns   = document.getElementById('step2-btns');
+
+      var lines = [
+        '잠깐!',
+        '네가 내 여친이 맞는지 확인해야겠어!',
+        '내 여친이라면 이정도 퀴즈는 쉽게 풀수 있을 거야'
+      ];
+      var timers = [];
+
+      function clearTimers() {
+        timers.forEach(function(t) { clearInterval(t); clearTimeout(t); });
+        timers = [];
+      }
+
+      function typeLine(text, onDone) {
+        textEl.textContent = '';
+        var i = 0;
+        var t = setInterval(function() {
+          textEl.textContent += text[i];
+          i++;
+          if (i >= text.length) {
+            clearInterval(t);
+            if (onDone) onDone();
+          }
+        }, 80);
+        timers.push(t);
+      }
+
+      function showButtons() {
+        btns.style.display = 'flex';
+      }
+
+      // 시퀀스 실행
+      clearTimers();
+      btns.style.display = 'none';
+
+      textEl.style.fontSize = '27px';
+      typeLine(lines[0], function() {
+        var t1 = setTimeout(function() {
+          textEl.style.fontSize = '';
+          typeLine(lines[1], function() {
+            var t2 = setTimeout(function() {
+              typeLine(lines[2], function() {
+                showButtons();
+              });
+            }, 1500);
+            timers.push(t2);
+          });
+        }, 1500);
+        timers.push(t1);
+      });
+
+      document.getElementById('btn-quiz').onclick = function() { goToStep(3); };
+      document.getElementById('btn-refuse').onclick = function() {
+        document.getElementById('step2-normal').style.display = 'none';
+        showGameOver([
+          '고양이는 잠시 멈추더니 눈물을 한 방울 흘렸습니다.',
+          '그 눈물이 땅에 닿는 순간,\n반경 5m 이내의 모든 생명체가 귀여움 과부하로 즉사했습니다.',
+          '당신도 그 안에 있었습니다.'
+        ], function() {
+          document.getElementById('step2-normal').style.display = '';
+          goToStep(1);
+        });
+      };
     }
 
     // main.js
-    initStep1();
+    stepInits[1] = initStep1;
+    stepInits[2] = initStep2;
+
+    var startStep = parseInt(location.hash.replace('#step', '')) || 1;
+    goToStep(startStep);
   </script>
 </body>
 </html>

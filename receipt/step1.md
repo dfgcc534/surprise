@@ -11,7 +11,7 @@
   - 대화창 아래: Y / N 버튼
 
 ## 캐릭터
-- 이미지: `assets/me/Untitled (2).png`
+- 이미지: `assets/me/stand_cat.png`
 - 크기: 200px 고정
 - 등장: 페이드인 애니메이션 (`@keyframes fadeIn`)
 
