@@ -1,52 +1,41 @@
-// 이 파일은 참조용. 실제 실행은 index.html 인라인 스크립트에서 동작합니다.
-// index.html과 동일한 로직을 유지하세요.
+function initStep2() {
+  var textEl = document.getElementById('step2-text');
+  var btns = document.getElementById('step2-btns');
+  var catImg = document.getElementById('step2-cat');
 
-import { goToStep } from '../utils.js';
-
-const LINES = [
-  '잠깐!',
-  '네가 내 여친이 맞는지 확인해야겠어!',
-  '내 여친이라면 이정도 퀴즈는 쉽게 풀수 있을 거야',
-];
-
-export function initStep2() {
-  const textEl = document.getElementById('step2-text');
-  const btns   = document.getElementById('step2-btns');
-  let timers   = [];
-
-  function clearTimers() {
-    timers.forEach(t => { clearInterval(t); clearTimeout(t); });
-    timers = [];
-  }
-
-  function typeLine(text, onDone) {
-    textEl.textContent = '';
-    let i = 0;
-    const t = setInterval(() => {
-      textEl.textContent += text[i];
-      i++;
-      if (i >= text.length) { clearInterval(t); if (onDone) onDone(); }
-    }, 80);
-    timers.push(t);
-  }
-
-  clearTimers();
   btns.style.display = 'none';
+  catImg.src = 'assets/me/stop_cat.png';
 
-  typeLine(LINES[0], () => {
-    const t1 = setTimeout(() => {
-      typeLine(LINES[1], () => {
-        const t2 = setTimeout(() => {
-          typeLine(LINES[2], () => {
-            btns.style.display = 'flex';
-          });
-        }, 1500);
-        timers.push(t2);
-      });
-    }, 1500);
-    timers.push(t1);
+  var lines = [
+    { text: '잠깐요!', delay: 1200 },
+    { text: '수령 확인이 필요합니다', delay: 1200 },
+    {
+      text: '몇 가지 질문에 답해주시겠어요?',
+      onStart: function () {
+        catImg.src = 'assets/me/IMG_3053.PNG';
+      }
+    }
+  ];
+
+  playLines(textEl, lines, function () {
+    btns.style.display = 'flex';
   });
 
-  document.getElementById('btn-quiz').onclick   = () => goToStep(3);
-  document.getElementById('btn-refuse').onclick = () => goToStep(3);
+  document.getElementById('btn-quiz').onclick = function () {
+    goToStep(3);
+  };
+
+  document.getElementById('btn-refuse').onclick = function () {
+    document.getElementById('step2-normal').style.display = 'none';
+    showGameOver([
+      '고양이는 잠시 멈추더니 눈물을 한 방울 흘렸습니다.',
+      '그 눈물이 땅에 닿는 순간, 반경 5m 이내의 모든 생명체가 귀여움 과부하로 즉사했습니다.',
+      '당신도 그 안에 있었습니다.'
+    ], function () {
+      document.getElementById('step2-normal').style.display = '';
+      goToStep(1);
+    });
+  };
 }
+
+stepInits[2] = initStep2;

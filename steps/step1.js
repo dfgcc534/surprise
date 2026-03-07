@@ -1,30 +1,29 @@
-import { goToStep } from '../utils.js';
+function initStep1() {
+  var textEl = document.getElementById('step1-text');
+  var btns = document.getElementById('step1-btns');
+  var btnYes = document.getElementById('btn-yes');
+  var btnNo = document.getElementById('btn-no');
 
-const INITIAL_TEXT = '편지를 받으시겠습니까?';
-const NO_TEXT = '...눌러줘';
+  btns.style.display = 'none';
 
-function typeText(el, text, speed = 80) {
-  el.textContent = '';
-  let i = 0;
-  const timer = setInterval(() => {
-    el.textContent += text[i];
-    i++;
-    if (i >= text.length) clearInterval(timer);
-  }, speed);
-}
+  var lines = [
+    { text: '저기...', delay: 1000 },
+    { text: '배달... 왔는데요...', delay: 1000 },
+    { text: '혹시... 이가윤 씨 맞으세요?', delay: 1200 },
+    { text: '편지를 받으시겠습니까?' }
+  ];
 
-export function initStep1() {
-  const textEl = document.getElementById('step1-text');
-  const btnYes = document.getElementById('btn-yes');
-  const btnNo = document.getElementById('btn-no');
-
-  typeText(textEl, INITIAL_TEXT);
-
-  btnYes.addEventListener('click', () => {
-    goToStep(2);
+  playLines(textEl, lines, function () {
+    btns.style.display = 'flex';
   });
 
-  btnNo.addEventListener('click', () => {
-    typeText(textEl, NO_TEXT);
-  });
+  btnYes.onclick = function () { goToStep(2); };
+  btnNo.onclick = function () {
+    btns.style.display = 'none';
+    typeText(textEl, '...받아주세요', 80, function () {
+      btns.style.display = 'flex';
+    });
+  };
 }
+
+stepInits[1] = initStep1;

@@ -1,3 +1,2 @@
-import { initStep1 } from './steps/step1.js';
-
-initStep1();
+var startStep = parseInt(location.hash.replace('#step', '')) || 1;
+goToStep(startStep);
