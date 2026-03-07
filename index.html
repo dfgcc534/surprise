@@ -132,8 +132,8 @@
       var btnYes = document.getElementById('btn-yes');
       var btnNo  = document.getElementById('btn-no');
       typeText(textEl, '편지를 받으시겠습니까?', 128);
-      btnYes.addEventListener('click', function() { goToStep(2); });
-      btnNo.addEventListener('click', function() { typeText(textEl, '...눌러줘', 137); });
+      btnYes.onclick = function() { goToStep(2); };
+      btnNo.onclick = function() { typeText(textEl, '...눌러줘', 137); };
     }
 
     // steps/step2.js

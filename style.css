@@ -86,6 +86,7 @@ body {
   display: flex;
   gap: 16px;
   justify-content: flex-end;
+  margin-top: 29px;
 }
 
 /* 게임오버 전체화면 */
