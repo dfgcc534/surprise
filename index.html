@@ -76,28 +76,25 @@
     <!-- Step 4: 편지 전달 -->
     <div id="step-4" class="screen">
       <div class="stage">
-        <div class="char-wrap step4-cat-wrap">
+        <div class="char-wrap step4-cat-wrap" id="step4-cat-wrap">
           <img id="step4-cat" src="assets/me/stand_cat.png" alt="고양이" />
-          <img id="step4-mail" src="assets/mail/제목 없음 (17).png" alt="편지" class="step4-mail" style="display:none;" />
+          <div id="step4-mail-area" class="step4-mail-area" style="display:none;">
+            <img id="step4-mail" src="assets/mail/image copy 3.png" alt="편지" class="step4-mail" />
+            <span class="step4-click">CLICK</span>
+          </div>
         </div>
       </div>
       <div class="dialog-box">
         <p id="step4-text" class="dialog-text"></p>
-      </div>
-      <div id="step4-letter" class="letter-wrap" style="display:none;">
-        <img src="assets/mail/제목 없음 (17).png" alt="편지" class="letter-img step4-letter-big" />
-        <span class="letter-click">CLICK</span>
       </div>
     </div>
 
     <!-- Step 5: 악당 등장 -->
     <div id="step-5" class="screen">
       <div class="stage stage-duo">
-        <div class="char-wrap">
+        <div class="char-wrap step5-cat-wrap">
           <img id="step5-cat" src="assets/me/stand_cat.png" alt="고양이" />
-        </div>
-        <div class="char-wrap">
-          <img id="step5-mail" src="assets/mail/제목 없음 (17).png" alt="편지" class="mail-small" />
+          <img id="step5-mail" src="assets/mail/image copy 3.png" alt="편지" class="step5-mail" />
         </div>
         <div class="char-wrap villain-wrap" id="step5-villain" style="display:none;">
           <img src="assets/bad/제목 없음 (6).png" alt="악당" />
@@ -133,7 +130,11 @@
         <div id="run-hearts"></div>
         <div id="run-progress-bar"><div id="run-progress-fill"></div></div>
       </div>
-      <div id="run-controls" class="hint-text">← 슬라이딩 | → 점프</div>
+      <div id="run-controls">
+        <span class="key-hint">&larr;</span> 슬라이딩
+        <span class="key-sep">|</span>
+        <span class="key-hint">&rarr;</span> 점프
+      </div>
     </div>
 
     <!-- Step 8: 편지 탈환 + 축하 -->
@@ -142,12 +143,12 @@
         <div class="char-wrap">
           <img src="assets/me/stand_cat.png" alt="고양이" />
         </div>
+        <div class="char-wrap letter-char">
+          <img src="assets/mail/image copy 3.png" alt="편지" class="letter-img bounce" />
+        </div>
         <div class="char-wrap">
           <img src="assets/you/image copy.png" alt="가윤이" />
         </div>
-      </div>
-      <div id="step8-letter" class="letter-wrap">
-        <img src="assets/mail/제목 없음 (17).png" alt="편지" class="letter-img bounce" />
       </div>
       <div class="dialog-box">
         <p id="step8-text" class="dialog-text"></p>
@@ -159,17 +160,17 @@
 
     <!-- Step 9: 편지 오픈 엔딩 -->
     <div id="step-9" class="screen">
-      <div class="stage stage-duo">
+      <div id="step9-top" class="stage stage-duo">
         <div class="char-wrap">
           <img src="assets/me/Untitled (1).png" alt="고양이" />
         </div>
-        <div id="step9-letter-wrap" class="letter-wrap">
-          <img id="step9-mail" src="assets/mail/제목 없음 (17).png" alt="편지" class="letter-img" />
+        <div id="step9-letter-wrap" class="char-wrap letter-char">
+          <img id="step9-mail" src="assets/mail/image copy 3.png" alt="편지" class="letter-img" />
           <span id="step9-click" class="letter-click">CLICK</span>
         </div>
       </div>
       <div id="step9-paper" style="display:none;">
-        <img src="assets/mail/제목 없음 (15).png" alt="편지지" class="paper-bg" />
+        <img src="assets/mail/image copy.png" alt="편지지" class="paper-bg" />
         <p id="step9-text" class="paper-text"></p>
       </div>
       <div id="step9-finale" style="display:none;">

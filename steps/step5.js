@@ -5,11 +5,12 @@ function initStep5() {
   var villainWrap = document.getElementById('step5-villain');
   var screen = document.getElementById('step-5');
 
-  // 초기 상태
-  catImg.src = 'assets/me/stand_cat.png';
-  mailImg.style.transform = '';
+  // 초기 상태 — 고양이가 편지를 들고 있음
+  catImg.src = 'assets/me/Untitled.png';
+  mailImg.style.display = '';
+  mailImg.style.transform = 'translateX(-50%)';
   mailImg.style.opacity = '1';
-  mailImg.className = 'mail-small';
+  mailImg.className = 'step5-mail';
   villainWrap.style.display = 'none';
   textEl.textContent = '';
 
@@ -25,11 +26,12 @@ function initStep5() {
   setTimeout(function () {
     villainWrap.style.display = 'block';
     typeText(textEl, '가윤이는 내 꺼야!!!', 50, function () {
-      // 3) 편지 날아감
+      // 3) 편지가 고양이 손에서 악당 쪽으로 빨려감
       setTimeout(function () {
-        mailImg.classList.add('fly-right');
+        mailImg.classList.add('mail-snatch');
         setTimeout(function () {
           mailImg.style.display = 'none';
+          mailImg.classList.remove('mail-snatch');
           // 4) 고양이 울기
           catImg.src = 'assets/me/IMG_3052.PNG';
           typeText(textEl, '으아아...', 120, function () {

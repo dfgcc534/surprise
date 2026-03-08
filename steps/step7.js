@@ -12,9 +12,10 @@ function initStep7() {
   // 슬라이딩: 히트박스 80px → 공중 장애물 아래로 통과
 
   var GROUND_OFFSET = 80;  // 캔버스 하단에서 지면까지
+  var PLAYER_Y_OFFSET = 20; // 캐릭터 에셋 하단 빈 공간 보정
   var CLEAR_DISTANCE = 3000;
-  var BASE_SPEED = 5;
-  var SPEED_INCREASE = 0.0006;
+  var BASE_SPEED = 11.25;
+  var SPEED_INCREASE = 0.0012;
   var INVINCIBLE_MS = 1000;
   var GRAVITY = 0.8;
   var JUMP_FORCE = -17;
@@ -52,37 +53,42 @@ function initStep7() {
     villain: 'assets/bad/제목 없음 (6).png'
   };
 
-  var groundObsImages = [];
+  var groundObs = [];
   var skyObsImages = [];
   var foodImages = [];
 
-  var groundObsPaths = [
-    'assets/obstacle/ground/image.png',
-    'assets/obstacle/ground/image copy.png',
-    'assets/obstacle/ground/image copy 2.png',
-    'assets/obstacle/ground/image copy 3.png',
-    'assets/obstacle/ground/image copy 4.png',
-    'assets/obstacle/ground/image copy 5.png',
-    'assets/obstacle/ground/image copy 6.png',
-    'assets/obstacle/ground/IMG_3047.PNG',
-    'assets/obstacle/ground/IMG_3048.PNG',
-    'assets/obstacle/ground/IMG_3058.PNG',
-    'assets/obstacle/ground/IMG_3059.PNG'
+  var groundObsDefs = [
+    { src: 'assets/obstacle/ground/image.png' },
+    { src: 'assets/obstacle/ground/image copy.png' },
+    { src: 'assets/obstacle/ground/image copy 2.png' },
+    { src: 'assets/obstacle/ground/image copy 3.png' },
+    { src: 'assets/obstacle/ground/image copy 4.png' },
+    { src: 'assets/obstacle/ground/image copy 5.png' },
+    { src: 'assets/obstacle/ground/image copy 6.png' },
+    { src: 'assets/obstacle/ground/image copy 7.png' },
+    { src: 'assets/obstacle/ground/image copy 8.png' },
+    { src: 'assets/obstacle/ground/image copy 9.png' },
+    { src: 'assets/obstacle/ground/IMG_3047 2.PNG' },
+    { src: 'assets/obstacle/ground/IMG_3048 2.PNG' },
+    { src: 'assets/obstacle/ground/IMG_3058 2.PNG' },
+    { src: 'assets/obstacle/ground/IMG_3059 2.PNG' }
   ];
   var skyObsPaths = [
     'assets/obstacle/sky/image.png',
-    'assets/obstacle/sky/제목 없음 (7).png',
-    'assets/obstacle/sky/제목 없음 (8).png',
-    'assets/obstacle/sky/제목 없음 (9).png',
-    'assets/obstacle/sky/제목 없음 (10).png',
-    'assets/obstacle/sky/제목 없음 (11).png',
-    'assets/obstacle/sky/제목 없음 (12).png',
-    'assets/obstacle/sky/제목 없음 (13).png'
+    'assets/obstacle/sky/image copy.png',
+    'assets/obstacle/sky/image copy 2.png',
+    'assets/obstacle/sky/image copy 3.png',
+    'assets/obstacle/sky/image copy 4.png',
+    'assets/obstacle/sky/image copy 5.png',
+    'assets/obstacle/sky/image copy 6.png',
+    'assets/obstacle/sky/image copy 7.png',
+    'assets/obstacle/sky/image copy 8.png'
   ];
   var foodPaths = [
-    'assets/obstacle/ground/food/image copy 7.png',
-    'assets/obstacle/ground/food/image copy 8.png',
-    'assets/obstacle/ground/food/image copy 9.png'
+    'assets/obstacle/ground/food/image.png',
+    'assets/obstacle/ground/food/image copy.png',
+    'assets/obstacle/ground/food/image copy 2.png',
+    'assets/obstacle/ground/food/image copy 3.png'
   ];
 
   function loadImg(src) {
@@ -92,7 +98,7 @@ function initStep7() {
   }
 
   for (var key in spriteList) sprites[key] = loadImg(spriteList[key]);
-  groundObsPaths.forEach(function (p) { groundObsImages.push(loadImg(p)); });
+  groundObsDefs.forEach(function (d) { groundObs.push({ img: loadImg(d.src), w: d.w || GROUND_OBS_W, h: d.h || GROUND_OBS_H }); });
   skyObsPaths.forEach(function (p) { skyObsImages.push(loadImg(p)); });
   foodPaths.forEach(function (p) { foodImages.push(loadImg(p)); });
 
@@ -127,7 +133,7 @@ function initStep7() {
 
     player = {
       x: 80,
-      y: groundY - P_H,  // 플레이어 top-left Y
+      y: groundY - P_H + PLAYER_Y_OFFSET,  // 플레이어 top-left Y
       w: P_W,
       h: P_H,
       vy: 0,
@@ -176,14 +182,14 @@ function initStep7() {
       player.state = 'run';
       player.w = P_W;
       player.h = P_H;
-      player.y = groundY - P_H;
+      player.y = groundY - P_H + PLAYER_Y_OFFSET;
     }
   }
 
   // ── 장애물 스폰 ──
   function spawnObstacle() {
     var now = Date.now();
-    var minInterval = Math.max(700, 1600 - distance * 0.25);
+    var minInterval = Math.max(800, 1800 - distance * 0.25);
     if (now - lastSpawn < minInterval) return;
     lastSpawn = now;
 
@@ -205,18 +211,18 @@ function initStep7() {
       var simg = skyObsImages[Math.floor(Math.random() * skyObsImages.length)];
       obs = {
         x: canvas.width + 20,
-        y: groundY - P_H - 5,  // 플레이어 서있을 때 머리 위치 근처
+        y: groundY - P_H + PLAYER_Y_OFFSET - 5,  // 플레이어 서있을 때 머리 위치 근처
         w: SKY_OBS_W, h: SKY_OBS_H,
         img: simg, type: 'sky'
       };
     } else {
       // 지상 장애물 — 점프로 회피
-      var gimg = groundObsImages[Math.floor(Math.random() * groundObsImages.length)];
+      var g = groundObs[Math.floor(Math.random() * groundObs.length)];
       obs = {
         x: canvas.width + 20,
-        y: groundY - GROUND_OBS_H,
-        w: GROUND_OBS_W, h: GROUND_OBS_H,
-        img: gimg, type: 'ground'
+        y: groundY - g.h,
+        w: g.w, h: g.h,
+        img: g.img, type: 'ground'
       };
     }
     obstacles.push(obs);
@@ -242,6 +248,7 @@ function initStep7() {
 
       if (distance >= CLEAR_DISTANCE) {
         clearing = true;
+        obstacles = [];
       }
       spawnObstacle();
     }
@@ -250,8 +257,8 @@ function initStep7() {
     if (!player.grounded) {
       player.vy += GRAVITY;
       player.y += player.vy;
-      if (player.y >= groundY - P_H) {
-        player.y = groundY - P_H;
+      if (player.y >= groundY - P_H + PLAYER_Y_OFFSET) {
+        player.y = groundY - P_H + PLAYER_Y_OFFSET;
         player.vy = 0;
         player.grounded = true;
         if (player.state === 'jump') player.state = 'run';
@@ -262,11 +269,11 @@ function initStep7() {
     if (player.sliding && player.grounded) {
       player.w = P_SLIDE_W;
       player.h = P_SLIDE_H;
-      player.y = groundY - P_SLIDE_H;
+      player.y = groundY - P_SLIDE_H + PLAYER_Y_OFFSET;
     } else if (player.grounded && player.state !== 'jump') {
       player.w = P_W;
       player.h = P_H;
-      player.y = groundY - P_H;
+      player.y = groundY - P_H + PLAYER_Y_OFFSET;
     }
 
     // 장애물 이동 & 충돌
@@ -301,7 +308,7 @@ function initStep7() {
 
     // 클리어 연출
     if (clearing) {
-      player.x += 3;
+      player.x += 5;
       if (player.x > canvas.width - 180) {
         gameOver = true;
         setTimeout(function () { goToStep(8); }, 500);

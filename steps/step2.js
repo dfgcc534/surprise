@@ -7,7 +7,7 @@ function initStep2() {
   catImg.src = 'assets/me/stop_cat.png';
 
   var lines = [
-    { text: '잠깐요!', delay: 1200 },
+    { text: '잠깐만요!', delay: 1200 },
     { text: '수령 확인이 필요합니다', delay: 1200 },
     {
       text: '몇 가지 질문에 답해주시겠어요?',

@@ -1,7 +1,7 @@
 var quizzes = [
   { q: '안세호는 이가윤을 사랑합니까?', answer: 'y' },
   { q: '이가윤은 안세호를 사랑합니까?', answer: 'y' },
-  { q: '14cm 이상?', answer: 'y' }
+  { q: '안세호는 14cm 이상입니까?', answer: 'y' }
 ];
 
 function initStep3() {
