@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Step 7 에셋 크기 확인 (×1.2)</title>
+<style>
+  body { background: #111; color: #fff; font-family: monospace; padding: 20px; }
+  h2 { border-bottom: 1px solid #555; padding-bottom: 8px; }
+  .category { margin-bottom: 40px; }
+  .row { display: flex; align-items: flex-end; gap: 30px; flex-wrap: wrap; margin-bottom: 20px; }
+  .item { text-align: center; }
+  .item img { image-rendering: pixelated; border: 1px dashed #555; }
+  .item .label { font-size: 11px; color: #aaa; margin-top: 4px; }
+  canvas { border: 1px solid #444; display: block; margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<h1>Step 7 에셋 크기 테스트 (×1.2 스케일)</h1>
+<p>플레이어: 144×198 (빨간) | 악당: 126×168 (파란) | 지면선 기준</p>
+
+<canvas id="preview" width="1400" height="450"></canvas>
+
+<div class="category">
+  <h2>지상 장애물 (단일 점프)</h2>
+  <div class="row" id="ground-obs"></div>
+</div>
+
+<div class="category">
+  <h2>공중 장애물 (슬라이딩)</h2>
+  <div class="row" id="sky-obs"></div>
+</div>
+
+<div class="category">
+  <h2>음식 트랩</h2>
+  <div class="row" id="food-obs"></div>
+</div>
+
+<script>
+var groundItems = [
+  { src: 'assets/obstacle/ground/image.png',        w: 132, h: 84,  name: '0: 그루터기' },
+  { src: 'assets/obstacle/ground/image copy.png',    w: 108, h: 78,  name: '1: 뱀' },
+  { src: 'assets/obstacle/ground/image copy 2.png',  w: 96,  h: 192, name: '2: 선인장' },
+  { src: 'assets/obstacle/ground/image copy 3.png',  w: 132, h: 192, name: '3: 나무' },
+  { src: 'assets/obstacle/ground/image copy 4.png',  w: 90,  h: 132, name: '4: 변기' },
+  { src: 'assets/obstacle/ground/image copy 5.png',  w: 144, h: 90,  name: '5: 레이저고양이' },
+  { src: 'assets/obstacle/ground/image copy 6.png',  w: 120, h: 54,  name: '6: 바나나껍질' },
+  { src: 'assets/obstacle/ground/image copy 7.png',  w: 126, h: 114, name: '7: 바위' },
+  { src: 'assets/obstacle/ground/image copy 8.png',  w: 96,  h: 108, name: '8: 버섯' },
+  { src: 'assets/obstacle/ground/image copy 9.png',  w: 108, h: 102, name: '9: 얼음' },
+  { src: 'assets/obstacle/ground/IMG_3047 2.PNG',    w: 168, h: 174, name: '10: 호날두' },
+];
+
+var skyItems = [
+  { src: 'assets/obstacle/sky/image.png',        w: 132, h: 108, name: '0: UFO' },
+  { src: 'assets/obstacle/sky/image copy.png',    w: 120, h: 78,  name: '1: 금붕어' },
+  { src: 'assets/obstacle/sky/image copy 2.png',  w: 144, h: 72,  name: '2: 갈매기' },
+  { src: 'assets/obstacle/sky/image copy 3.png',  w: 132, h: 66,  name: '3: 종이비행기' },
+  { src: 'assets/obstacle/sky/image copy 4.png',  w: 192, h: 84,  name: '4: 여객기' },
+  { src: 'assets/obstacle/sky/image copy 5.png',  w: 102, h: 132, name: '5: 열기구' },
+  { src: 'assets/obstacle/sky/image copy 6.png',  w: 120, h: 102, name: '6: 나비떼' },
+  { src: 'assets/obstacle/sky/image copy 7.png',  w: 120, h: 102, name: '7: 벌떼' },
+  { src: 'assets/obstacle/sky/image copy 8.png',  w: 96,  h: 126, name: '8: 풍선' },
+];
+
+var foodItems = [
+  { src: 'assets/obstacle/ground/food/image.png',        w: 78, h: 72, name: '0: 햄버거' },
+  { src: 'assets/obstacle/ground/food/image copy.png',    w: 84, h: 78, name: '1: 피자' },
+  { src: 'assets/obstacle/ground/food/image copy 2.png',  w: 96, h: 66, name: '2: 핫도그' },
+  { src: 'assets/obstacle/ground/food/image copy 3.png',  w: 84, h: 60, name: '3: 도넛' },
+];
+
+function addItems(id, items) {
+  var c = document.getElementById(id);
+  items.forEach(function(item) {
+    var div = document.createElement('div');
+    div.className = 'item';
+    var img = document.createElement('img');
+    img.src = item.src; img.width = item.w; img.height = item.h;
+    div.appendChild(img);
+    var label = document.createElement('div');
+    label.className = 'label';
+    label.textContent = item.name + ' (' + item.w + '×' + item.h + ')';
+    div.appendChild(label);
+    c.appendChild(div);
+  });
+}
+
+addItems('ground-obs', groundItems);
+addItems('sky-obs', skyItems);
+addItems('food-obs', foodItems);
+
+// Canvas preview
+var canvas = document.getElementById('preview');
+var ctx = canvas.getContext('2d');
+var groundY = 400;
+var loaded = 0;
+var total = groundItems.length + 2;
+
+function tryDraw() {
+  if (++loaded < total) return;
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(0, groundY); ctx.lineTo(1400, groundY); ctx.stroke();
+
+  ctx.strokeStyle = '#f00'; ctx.strokeRect(20, groundY - 198 + 24, 144, 198);
+  ctx.fillStyle = '#f00'; ctx.font = '11px monospace';
+  ctx.fillText('Player 144×198', 20, groundY + 40);
+
+  ctx.strokeStyle = '#44f'; ctx.strokeRect(1250, groundY - 168, 126, 168);
+  ctx.fillStyle = '#44f'; ctx.fillText('Villain 126×168', 1250, groundY + 40);
+
+  var x = 190;
+  groundItems.forEach(function(item) {
+    var img = new Image(); img.src = item.src;
+    ctx.drawImage(img, x, groundY - item.h + 24, item.w, item.h);
+    ctx.fillStyle = '#aaa'; ctx.fillText(item.name.split(': ')[1], x, groundY + 40);
+    x += item.w + 20;
+  });
+}
+
+groundItems.forEach(function(i) { var img = new Image(); img.src = i.src; img.onload = tryDraw; });
+var p = new Image(); p.src = 'assets/you/jumping/image.png'; p.onload = tryDraw;
+var v = new Image(); v.src = 'assets/bad/제목 없음 (6).png'; v.onload = tryDraw;
+</script>
+</body>
+</html>

@@ -5,36 +5,24 @@ function initStep7() {
   var progressFill = document.getElementById('run-progress-fill');
 
   // ── 게임 설정 ──
-  // 플레이어: 120x165 (서있기), 슬라이딩 시 165x80
-  // 지상 장애물: 100x100, 점프로 넘음
-  // 공중 장애물: 95x95, 슬라이딩으로 통과
-  // 점프: 최대 높이 ~180px → 지상 장애물(100px) 넘을 수 있음
-  // 슬라이딩: 히트박스 80px → 공중 장애물 아래로 통과
-
-  var GROUND_OFFSET = 80;  // 캔버스 하단에서 지면까지
-  var PLAYER_Y_OFFSET = 20; // 캐릭터 에셋 하단 빈 공간 보정
+  var GROUND_OFFSET = 96;
+  var PLAYER_Y_OFFSET = 24;
   var CLEAR_DISTANCE = 3000;
   var BASE_SPEED = 11.25;
   var SPEED_INCREASE = 0.0012;
   var INVINCIBLE_MS = 1000;
-  var GRAVITY = 0.8;
-  var JUMP_FORCE = -17;
+  var GRAVITY = 0.96;
+  var JUMP_FORCE = -20;
 
   // 플레이어 크기
-  var P_W = 120;
-  var P_H = 165;
-  var P_SLIDE_W = 165;
-  var P_SLIDE_H = 80;
+  var P_W = 144;
+  var P_H = 198;
+  var P_SLIDE_W = 198;
+  var P_SLIDE_H = 96;
 
-  // 장애물 크기
-  var GROUND_OBS_W = 100;
-  var GROUND_OBS_H = 100;
-  var SKY_OBS_W = 95;
-  var SKY_OBS_H = 95;
-  var FOOD_W = 65;
-  var FOOD_H = 65;
-  var VILLAIN_W = 140;
-  var VILLAIN_H = 140;
+  // 악당 크기
+  var VILLAIN_W = 126;
+  var VILLAIN_H = 168;
 
   // ── 스프라이트 로드 ──
   var sprites = {};
@@ -53,43 +41,45 @@ function initStep7() {
     villain: 'assets/bad/제목 없음 (6).png'
   };
 
-  var groundObs = [];
-  var skyObsImages = [];
-  var foodImages = [];
-
+  // 지상 장애물 — 개별 크기 (×1.2)
   var groundObsDefs = [
-    { src: 'assets/obstacle/ground/image.png' },
-    { src: 'assets/obstacle/ground/image copy.png' },
-    { src: 'assets/obstacle/ground/image copy 2.png' },
-    { src: 'assets/obstacle/ground/image copy 3.png' },
-    { src: 'assets/obstacle/ground/image copy 4.png' },
-    { src: 'assets/obstacle/ground/image copy 5.png' },
-    { src: 'assets/obstacle/ground/image copy 6.png' },
-    { src: 'assets/obstacle/ground/image copy 7.png' },
-    { src: 'assets/obstacle/ground/image copy 8.png' },
-    { src: 'assets/obstacle/ground/image copy 9.png' },
-    { src: 'assets/obstacle/ground/IMG_3047 2.PNG' },
-    { src: 'assets/obstacle/ground/IMG_3048 2.PNG' },
-    { src: 'assets/obstacle/ground/IMG_3058 2.PNG' },
-    { src: 'assets/obstacle/ground/IMG_3059 2.PNG' }
+    { src: 'assets/obstacle/ground/image.png',        w: 132, h: 84  },  // 0: 그루터기
+    { src: 'assets/obstacle/ground/image copy.png',    w: 108, h: 78  },  // 1: 뱀
+    { src: 'assets/obstacle/ground/image copy 2.png',  w: 96,  h: 179 },  // 2: 선인장
+    { src: 'assets/obstacle/ground/image copy 3.png',  w: 132, h: 179 },  // 3: 나무
+    { src: 'assets/obstacle/ground/image copy 4.png',  w: 90,  h: 132 },  // 4: 변기
+    { src: 'assets/obstacle/ground/image copy 5.png',  w: 144, h: 90  },  // 5: 레이저고양이
+    { src: 'assets/obstacle/ground/image copy 6.png',  w: 120, h: 54  },  // 6: 바나나껍질
+    { src: 'assets/obstacle/ground/image copy 7.png',  w: 126, h: 114 },  // 7: 바위
+    { src: 'assets/obstacle/ground/image copy 8.png',  w: 96,  h: 108 },  // 8: 버섯
+    { src: 'assets/obstacle/ground/image copy 9.png',  w: 108, h: 102 },  // 9: 얼음
+    { src: 'assets/obstacle/ground/IMG_3047 2.PNG',    w: 168, h: 174 }   // 10: 호날두(슬라이딩)
   ];
-  var skyObsPaths = [
-    'assets/obstacle/sky/image.png',
-    'assets/obstacle/sky/image copy.png',
-    'assets/obstacle/sky/image copy 2.png',
-    'assets/obstacle/sky/image copy 3.png',
-    'assets/obstacle/sky/image copy 4.png',
-    'assets/obstacle/sky/image copy 5.png',
-    'assets/obstacle/sky/image copy 6.png',
-    'assets/obstacle/sky/image copy 7.png',
-    'assets/obstacle/sky/image copy 8.png'
+
+  // 공중 장애물 — 개별 크기 (×1.2)
+  var skyObsDefs = [
+    { src: 'assets/obstacle/sky/image.png',        w: 132, h: 108 },  // 0: UFO
+    { src: 'assets/obstacle/sky/image copy.png',    w: 120, h: 78  },  // 1: 금붕어
+    { src: 'assets/obstacle/sky/image copy 2.png',  w: 144, h: 72  },  // 2: 갈매기
+    { src: 'assets/obstacle/sky/image copy 3.png',  w: 132, h: 66  },  // 3: 종이비행기
+    { src: 'assets/obstacle/sky/image copy 4.png',  w: 192, h: 84  },  // 4: 여객기
+    { src: 'assets/obstacle/sky/image copy 5.png',  w: 102, h: 132 },  // 5: 열기구
+    { src: 'assets/obstacle/sky/image copy 6.png',  w: 120, h: 102 },  // 6: 나비떼
+    { src: 'assets/obstacle/sky/image copy 7.png',  w: 120, h: 102 },  // 7: 벌떼
+    { src: 'assets/obstacle/sky/image copy 8.png',  w: 96,  h: 126 }   // 8: 풍선
   ];
-  var foodPaths = [
-    'assets/obstacle/ground/food/image.png',
-    'assets/obstacle/ground/food/image copy.png',
-    'assets/obstacle/ground/food/image copy 2.png',
-    'assets/obstacle/ground/food/image copy 3.png'
+
+  // 음식 트랩 — 개별 크기 (×1.2)
+  var foodObsDefs = [
+    { src: 'assets/obstacle/ground/food/image.png',        w: 78, h: 72 },  // 0: 햄버거
+    { src: 'assets/obstacle/ground/food/image copy.png',    w: 84, h: 78 },  // 1: 피자
+    { src: 'assets/obstacle/ground/food/image copy 2.png',  w: 96, h: 66 },  // 2: 핫도그
+    { src: 'assets/obstacle/ground/food/image copy 3.png',  w: 84, h: 60 }   // 3: 도넛
   ];
+
+  var groundObs = [];
+  var skyObs = [];
+  var foodObs = [];
 
   function loadImg(src) {
     var img = new Image();
@@ -98,16 +88,62 @@ function initStep7() {
   }
 
   for (var key in spriteList) sprites[key] = loadImg(spriteList[key]);
-  groundObsDefs.forEach(function (d) { groundObs.push({ img: loadImg(d.src), w: d.w || GROUND_OBS_W, h: d.h || GROUND_OBS_H }); });
-  skyObsPaths.forEach(function (p) { skyObsImages.push(loadImg(p)); });
-  foodPaths.forEach(function (p) { foodImages.push(loadImg(p)); });
+  groundObsDefs.forEach(function (d) { groundObs.push({ img: loadImg(d.src), w: d.w, h: d.h }); });
+  skyObsDefs.forEach(function (d) { skyObs.push({ img: loadImg(d.src), w: d.w, h: d.h }); });
+  foodObsDefs.forEach(function (d) { foodObs.push({ img: loadImg(d.src), w: d.w, h: d.h }); });
+
+  // ── 고정 코스 ──
+  var COURSE = [
+    // Phase 1: 튜토리얼 (0~450)
+    { dist: 100,  type: 'ground', idx: 6 },   // 바나나껍질
+    { dist: 210,  type: 'ground', idx: 0 },   // 그루터기
+    { dist: 330,  type: 'sky',    idx: 2 },   // 갈매기
+
+    // Phase 2: 보통 (450~1340)
+    { dist: 450,  type: 'ground', idx: 7 },   // 바위
+    { dist: 540,  type: 'sky',    idx: 0 },   // UFO
+    { dist: 640,  type: 'ground', idx: 4 },   // 변기
+    { dist: 740,  type: 'sky',    idx: 4 },   // 여객기
+    { dist: 830,  type: 'ground', idx: 8 },   // 버섯
+    { dist: 920,  type: 'ground', idx: 9 },   // 얼음
+    { dist: 1010, type: 'sky',    idx: 5 },   // 열기구
+    { dist: 1090, type: 'ground', idx: 5 },   // 레이저고양이
+    { dist: 1170, type: 'ground', idx: 1 },   // 뱀
+    { dist: 1250, type: 'sky',    idx: 3 },   // 종이비행기
+
+    // Phase 3: 큰 장애물 (1340~2020)
+    { dist: 1340, type: 'ground', idx: 2 },   // 선인장
+    { dist: 1430, type: 'sky',    idx: 7 },   // 벌떼
+    { dist: 1510, type: 'ground', idx: 7 },   // 바위
+    { dist: 1600, type: 'ground', idx: 3 },   // 나무
+    { dist: 1690, type: 'sky',    idx: 1 },   // 금붕어
+    { dist: 1770, type: 'food',   idx: 0 },   // 햄버거 트랩
+    { dist: 1860, type: 'ground', idx: 4 },   // 변기
+    { dist: 1940, type: 'sky',    idx: 6 },   // 나비떼
+
+    // Phase 4: 하드 (2020~3000)
+    { dist: 2020, type: 'ground', idx: 10 },  // 호날두
+    { dist: 2100, type: 'sky',    idx: 8 },   // 풍선
+    { dist: 2170, type: 'ground', idx: 8 },   // 버섯
+    { dist: 2240, type: 'ground', idx: 10 },  // 호날두
+    { dist: 2320, type: 'sky',    idx: 0 },   // UFO
+    { dist: 2390, type: 'ground', idx: 0 },   // 그루터기
+    { dist: 2450, type: 'sky',    idx: 4 },   // 여객기
+    { dist: 2520, type: 'ground', idx: 2 },   // 선인장
+    { dist: 2600, type: 'ground', idx: 9 },   // 얼음
+    { dist: 2670, type: 'sky',    idx: 7 },   // 벌떼
+    { dist: 2740, type: 'ground', idx: 3 },   // 나무
+    { dist: 2820, type: 'ground', idx: 1 },   // 뱀
+    { dist: 2900, type: 'sky',    idx: 2 },   // 갈매기
+    { dist: 2970, type: 'ground', idx: 6 }    // 바나나껍질
+  ];
 
   // ── 게임 상태 ──
   var lives, distance, speed, gameOver, clearing, foodTriggered;
   var player, obstacles, invincibleUntil, animFrame;
   var runFrames, jumpFrames, slideFrames;
-  var lastSpawn;
-  var groundY; // 지면 Y 좌표 (플레이어 발 위치)
+  var courseIdx;
+  var groundY;
 
   function resize() {
     canvas.width = canvas.offsetWidth;
@@ -125,7 +161,7 @@ function initStep7() {
     foodTriggered = false;
     invincibleUntil = 0;
     obstacles = [];
-    lastSpawn = 0;
+    courseIdx = 0;
 
     runFrames = [sprites.run1, sprites.run2];
     jumpFrames = [sprites.jump1, sprites.jump2, sprites.jump3, sprites.jump4];
@@ -133,7 +169,7 @@ function initStep7() {
 
     player = {
       x: 80,
-      y: groundY - P_H + PLAYER_Y_OFFSET,  // 플레이어 top-left Y
+      y: groundY - P_H + PLAYER_Y_OFFSET,
       w: P_W,
       h: P_H,
       vy: 0,
@@ -186,51 +222,29 @@ function initStep7() {
     }
   }
 
-  // ── 장애물 스폰 ──
-  function spawnObstacle() {
-    var now = Date.now();
-    var minInterval = Math.max(800, 1800 - distance * 0.25);
-    if (now - lastSpawn < minInterval) return;
-    lastSpawn = now;
-
-    var r = Math.random();
-    var obs;
-
-    if (r < 0.08 && distance > 600) {
-      // 음식 트랩 — 지면 위에 배치
-      var fimg = foodImages[Math.floor(Math.random() * foodImages.length)];
-      obs = {
-        x: canvas.width + 20,
-        y: groundY - FOOD_H,
-        w: FOOD_W, h: FOOD_H,
-        img: fimg, type: 'food'
-      };
-    } else if (r < 0.45) {
-      // 공중 장애물 — 슬라이딩으로 회피
-      // y 위치: 서있는 플레이어 머리~가슴 높이 → 슬라이딩(80px)하면 아래로 통과
-      var simg = skyObsImages[Math.floor(Math.random() * skyObsImages.length)];
-      obs = {
-        x: canvas.width + 20,
-        y: groundY - P_H + PLAYER_Y_OFFSET - 5,  // 플레이어 서있을 때 머리 위치 근처
-        w: SKY_OBS_W, h: SKY_OBS_H,
-        img: simg, type: 'sky'
-      };
-    } else {
-      // 지상 장애물 — 점프로 회피
-      var g = groundObs[Math.floor(Math.random() * groundObs.length)];
-      obs = {
-        x: canvas.width + 20,
-        y: groundY - g.h,
-        w: g.w, h: g.h,
-        img: g.img, type: 'ground'
-      };
+  // ── 고정 코스 스폰 ──
+  function spawnFromCourse() {
+    while (courseIdx < COURSE.length && distance >= COURSE[courseIdx].dist) {
+      var c = COURSE[courseIdx];
+      var obs;
+      if (c.type === 'ground') {
+        var g = groundObs[c.idx];
+        obs = { x: canvas.width + 20, y: groundY - g.h + 24, w: g.w, h: g.h, img: g.img, type: 'ground' };
+      } else if (c.type === 'sky') {
+        var s = skyObs[c.idx];
+        obs = { x: canvas.width + 20, y: groundY - P_H + PLAYER_Y_OFFSET - 6, w: s.w, h: s.h, img: s.img, type: 'sky' };
+      } else if (c.type === 'food') {
+        var f = foodObs[c.idx];
+        obs = { x: canvas.width + 20, y: groundY - f.h + 18, w: f.w, h: f.h, img: f.img, type: 'food' };
+      }
+      obstacles.push(obs);
+      courseIdx++;
     }
-    obstacles.push(obs);
   }
 
   // ── 충돌 판정 (히트박스 약간 축소) ──
   function collides(a, b) {
-    var s = 15;
+    var s = 18;
     return a.x + s < b.x + b.w - s &&
            a.x + a.w - s > b.x + s &&
            a.y + s < b.y + b.h - s &&
@@ -250,7 +264,7 @@ function initStep7() {
         clearing = true;
         obstacles = [];
       }
-      spawnObstacle();
+      spawnFromCourse();
     }
 
     // 플레이어 물리
@@ -309,7 +323,7 @@ function initStep7() {
     // 클리어 연출
     if (clearing) {
       player.x += 5;
-      if (player.x > canvas.width - 180) {
+      if (player.x > canvas.width - 200) {
         gameOver = true;
         setTimeout(function () { goToStep(8); }, 500);
       }
@@ -335,7 +349,7 @@ function initStep7() {
 
     // 클리어 시 악당
     if (clearing) {
-      ctx.drawImage(sprites.villain, canvas.width - 150, groundY - VILLAIN_H, VILLAIN_W, VILLAIN_H);
+      ctx.drawImage(sprites.villain, canvas.width - 170, groundY - VILLAIN_H, VILLAIN_W, VILLAIN_H);
     }
 
     // 플레이어

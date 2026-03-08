@@ -8,7 +8,7 @@ function initStep8() {
   // confetti
   spawnConfetti(40);
 
-  typeText(textEl, '역시 QUEEN 이야~', 80, function () {
+  typeText(textEl, 'SIUUUUUU', 90, function () {
     btns.style.display = 'flex';
   });
 
