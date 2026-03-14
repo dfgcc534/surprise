@@ -35,24 +35,14 @@ function initStep9() {
         paper.style.display = 'flex';
         paper.classList.add('fade-in');
 
-        // 편지 내용 로드
-        fetch('assets/letter.txt')
-          .then(function (r) { return r.text(); })
-          .then(function (text) {
-            typeText(paperText, text || '편지 내용을 작성해주세요', 80, function () {
-              setTimeout(function () {
-                finale.style.display = 'block';
-                spawnConfetti(50);
-              }, 1500);
-            });
-          })
-          .catch(function () {
-            typeText(paperText, '편지 내용을 작성해주세요', 80, function () {
-              setTimeout(function () {
-                finale.style.display = 'block';
-              }, 1500);
-            });
-          });
+        // 편지 내용
+        var letterContent = '가윤이에게\n\n다음에는 꼭 더 멋지고 완벽한 서프라이즈 준비할게\n늘 사랑하고 생일 축하해!!!\n\n너를 사랑하는 남자친구가';
+        typeText(paperText, letterContent, 80, function () {
+          setTimeout(function () {
+            finale.style.display = 'block';
+            spawnConfetti(50);
+          }, 1500);
+        });
       }, 800);
     }, 1000);
   };

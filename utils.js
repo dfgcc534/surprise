@@ -15,10 +15,14 @@ function goToStep(n) {
 /* ── 타이핑 효과 ── */
 function typeText(el, text, speed, cb) {
   speed = speed || 60;
-  el.textContent = '';
+  el.innerHTML = '';
   var i = 0;
   var timer = setInterval(function () {
-    el.textContent += text[i];
+    if (text[i] === '\n') {
+      el.innerHTML += '<br>';
+    } else {
+      el.innerHTML += text[i];
+    }
     i++;
     if (i >= text.length) {
       clearInterval(timer);
